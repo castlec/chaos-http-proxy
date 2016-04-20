@@ -299,7 +299,7 @@ public final class ChaosHttpProxyTest {
                 .send();
         assertThat(gotContentLength.get()).isTrue();
     }
-
+    
     @Test
     public void testApi() throws InterruptedException, TimeoutException,
             ExecutionException, IOException {
@@ -335,6 +335,44 @@ public final class ChaosHttpProxyTest {
 
     }
 
+<<<<<<< HEAD
+    @Test
+    public void testApi() throws InterruptedException, TimeoutException,
+            ExecutionException, IOException {
+        org.eclipse.jetty.client.api.Request request =
+                client.POST(httpBinEndpoint + "/chaos/api");
+        Properties properties = new Properties();
+        properties.setProperty(Failure.CHAOS_CONFIG_STRING + "success", "6");
+        properties.setProperty(Failure.CHAOS_CONFIG_STRING + "timeout", "3");
+
+        final ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        properties.store(byteArrayOutputStream, "test");
+        request.content(new ContentProvider() {
+
+            @Override
+            public Iterator<ByteBuffer> iterator() {
+                ArrayList<ByteBuffer> buffers = new ArrayList<ByteBuffer>();
+                buffers.add(
+                        ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
+                return buffers.iterator();
+            }
+
+            @Override
+            public long getLength() {
+                return byteArrayOutputStream.toByteArray().length;
+            }
+        });
+        validateApiResponse(request.send());
+
+        // do another get to test the pure get piece. we only do this because
+        // we're not supposed to depend upon side effects between tests
+        validateApiResponse(client.GET(httpBinEndpoint + "/chaos/api"));
+
+    }
+
+=======
+>>>>>>> 6be0921d2bcc74e72728166600e936eedf477b42
     private void validateApiResponse(ContentResponse response)
             throws IOException {
         Properties responseProperties = new Properties();
@@ -349,7 +387,11 @@ public final class ChaosHttpProxyTest {
                         .as("timeout config").isEqualTo("3");
         assertThat(response.getStatus()).as("status").isEqualTo(200);
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 6be0921d2bcc74e72728166600e936eedf477b42
     /** Supplier whose elements are provided by an Iterable. */
     private static class SupplierFromIterable<T> implements Supplier<T> {
         private final Iterator<T> iterator;
